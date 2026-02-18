@@ -122,8 +122,8 @@ glassboxml/
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/glassboxml.git
-cd glassboxml
+git clone https://github.com/hogwarts-coder10/GlassBox-ML.git
+cd GlassBox-ML
 pip install -r requirements.txt
 ```
 
