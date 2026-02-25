@@ -2,6 +2,7 @@
 
 Machine Learning you can actually see.
 
+![Tech Stack](https://img.shields.io/badge/Stack-%20Python-blue?style=for-the-badge)
 ---
 
 ## Overview
