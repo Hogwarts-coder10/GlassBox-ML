@@ -2,38 +2,55 @@ import numpy as np
 from abc import ABC, abstractmethod
 
 class Optimizer(ABC):
-    """Base class for all optimization algorithms in GlassBoxML."""
+    """
+    Base class for all optimization algorithms in GlassBoxML.
+    """
+
     def __init__(self, learning_rate=0.01):
         self.lr = learning_rate
 
     @abstractmethod
-    def update(self, params, grads):
-        """Updates and returns the new parameters based on the gradients."""
+    def update(self, coef, intercept, dw, db):
+        """
+        Updates and returns the new coefficients and intercept based on the gradients.
+        """
+
         pass
 
 class GradientDescent(Optimizer):
-    """Standard Batch Gradient Descent."""
-    def update(self, params, grads):
+    """
+    Standard Batch Gradient Descent.
+    """
+
+    def update(self, coef, intercept, dw, db):
         # The classic update rule: θ = θ - α∇J(θ)
-        params['w'] -= self.lr * grads['dw']
-        params['b'] -= self.lr * grads['db']
-        return params
+        coef -= self.lr * dw
+        intercept -= self.lr * db
+        return coef, intercept
 
 class Momentum(Optimizer):
-    """Gradient Descent with Momentum to accelerate learning."""
+    """
+    Gradient Descent with Momentum to accelerate learning.
+    """
+    
     def __init__(self, learning_rate=0.01, beta=0.9):
         super().__init__(learning_rate)
         self.beta = beta
-        self.velocities = None
+        self.v_dw = None
+        self.v_db = None
 
-    def update(self, params, grads):
-        if self.velocities is None:
-            self.velocities = {key: np.zeros_like(val) for key, val in params.items()}
+    def update(self, coef, intercept, dw, db):
+        # Initialize velocities on the first step
+        if self.v_dw is None:
+            self.v_dw = np.zeros_like(coef)
+            self.v_db = 0.0
         
-        # v = βv + (1-β)∇J
-        self.velocities['w'] = self.beta * self.velocities['w'] + (1 - self.beta) * grads['dw']
-        self.velocities['b'] = self.beta * self.velocities['b'] + (1 - self.beta) * grads['db']
+        # Exponential moving average of gradients: v = βv + (1-β)∇J
+        self.v_dw = self.beta * self.v_dw + (1 - self.beta) * dw
+        self.v_db = self.beta * self.v_db + (1 - self.beta) * db
         
-        params['w'] -= self.lr * self.velocities['w']
-        params['b'] -= self.lr * self.velocities['b']
-        return params
+        # Apply the updates
+        coef -= self.lr * self.v_dw
+        intercept -= self.lr * self.v_db
+        
+        return coef, intercept
