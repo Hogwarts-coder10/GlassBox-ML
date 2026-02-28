@@ -11,59 +11,71 @@ class RidgeRegression(GlassBoxModel):
         self.optimizer = optimizer
         self.alpha = alpha  # The regularization strength
         self.epochs = epochs
-        self.params = {'w': None, 'b': None}
 
     def check_assumptions(self, X, y):
-        """
-        Ridge specific diagnostics: Checks if features are scaled.
-        """
         self.failure_modes = []
-        
-        # Calculate the variance of each feature column
         variances = np.var(X, axis=0)
         max_var = np.max(variances)
         min_var = np.min(variances)
         
-        # If the highest variance is over 10x the lowest, the data isn't scaled
         if min_var > 0 and (max_var / min_var) > 10:
             self.failure_modes.append(
                 f"Unscaled features detected (Max Var: {max_var:.2f}, Min Var: {min_var:.2f}). "
                 "Ridge Regression is highly sensitive to feature scales. "
                 "Features with larger scales will be penalized less. Please standardize your X data."
             )
-            
         return self.failure_modes
 
     def fit(self, X, y):
+        self._store_dataset_stats(X)
         n_samples, n_features = X.shape
         
-        self.params['w'] = np.zeros(n_features)
-        self.params['b'] = 0.0
+        self.coef_ = np.zeros(n_features)
+        self.intercept_ = 0.0
         
         self.check_assumptions(X, y)
 
         for epoch in range(self.epochs):
-            y_pred = self.predict(X)
+            # 1. Forward Pass
+            y_pred = np.dot(X, self.coef_) + self.intercept_
             
-            # 1. Calculate Loss (MSE + L2 Penalty)
+            # 2. Compute Loss (MSE + L2)
             mse_loss = (1 / (2 * n_samples)) * np.sum((y_pred - y) ** 2)
-            l2_penalty = (self.alpha / 2) * np.sum(self.params['w'] ** 2)
+            l2_penalty = (self.alpha / 2) * np.sum(self.coef_ ** 2)
             loss = mse_loss + l2_penalty
             
-            # 2. Calculate Gradients (MSE gradient + L2 derivative)
+            # 3. Compute Gradients (MSE + L2 Derivative)
             grads = {
-                'dw': (1 / n_samples) * np.dot(X.T, (y_pred - y)) + (self.alpha * self.params['w']),
-                'db': (1 / n_samples) * np.sum(y_pred - y) # Bias is not penalized
+                'dw': (1 / n_samples) * np.dot(X.T, (y_pred - y)) + (self.alpha * self.coef_),
+                'db': (1 / n_samples) * np.sum(y_pred - y)
             }
             
-            # 3. Optimizer updates parameters
-            self.params = self.optimizer.update(self.params, grads)
+            # 4. Clean One-Liner Optimizer Update
+            self.coef_, self.intercept_ = self.optimizer.update(
+                self.coef_, self.intercept_, grads['dw'], grads['db']
+            )
             
-            # 4. Track the journey
-            self._record_step(epoch_loss=loss, epoch_gradient={'dw': grads['dw'].copy(), 'db': grads['db']})
+            # 5. Record Step
+            self._record_step(epoch_loss=loss, epoch_gradients={'dw': grads['dw'].copy(), 'db': grads['db']})
             
         self.is_fitted = True
         self.training_error = self.loss_history[-1]
 
     def predict(self, X):
-        return np.dot(X, self.params['w']) + self.params['b']
+        return self.decision_function(X)
+
+    def explain(self):
+        if not self.is_fitted:
+            return "Model is not fitted."
+            
+        equation = "y = "
+        terms = [f"({w:.4f} * x{i+1})" for i, w in enumerate(self.coef_)]
+        equation += " + ".join(terms) + f" + {self.intercept_:.4f}"
+        
+        return (
+            "--- GlassBox Explanation: Ridge Regression (L2) ---\n"
+            f"Equation: {equation}\n"
+            f"Regularization Strength (Alpha): {self.alpha}\n"
+            "Interpretation: Ridge shrinks all feature weights to prevent extreme reliance on any "
+            "single feature, ensuring a smoother, more robust model without eliminating features entirely."
+        )
