@@ -6,7 +6,6 @@ class LearningCurveAnalyzer:
     Diagnoses Bias (Underfitting) and Variance (Overfitting) by plotting 
     model performance across increasing amounts of training data.
     """
-    
     @staticmethod
     def generate_curve(model, X, y, is_classifier=False, n_splits=5, test_size=0.2):
         """
@@ -88,4 +87,5 @@ class LearningCurveAnalyzer:
                 verticalalignment='center', horizontalalignment='center', bbox=props)
         
         plt.tight_layout()
+
         plt.show()
