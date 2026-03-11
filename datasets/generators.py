@@ -85,4 +85,112 @@ def make_stretched_blobs(n_samples_per_class=150, random_state=None):
                         np.ones(n_samples_per_class), 
                         np.full(n_samples_per_class, 2)])
     
+
     return X, y
+
+
+def make_donut(n_samples=200, noise=0.1, random_state=None):
+    """
+    Generates a 2D 'donut' dataset (a circle inside a ring).
+    This data is impossible to separate with a straight linear line.
+    """
+    if random_state is not None:
+        np.random.seed(random_state)
+        
+    # Inner circle (Class 0)
+    n_inner = n_samples // 2
+    theta_inner = np.random.uniform(0, 2 * np.pi, n_inner)
+    r_inner = 1.0 + np.random.normal(0, noise, n_inner)
+    
+    # Outer circle (Class 1)
+    n_outer = n_samples - n_inner
+    theta_outer = np.random.uniform(0, 2 * np.pi, n_outer)
+    r_outer = 3.0 + np.random.normal(0, noise, n_outer)
+    
+    # Combine
+    X = np.vstack([
+        np.column_stack([r_inner * np.cos(theta_inner), r_inner * np.sin(theta_inner)]),
+        np.column_stack([r_outer * np.cos(theta_outer), r_outer * np.sin(theta_outer)])
+    ])
+    y = np.concatenate([np.zeros(n_inner), np.ones(n_outer)])
+    
+    return X, y
+
+
+def make_moons(n_samples=200, noise=0.1, random_state=None):
+    """
+    Generates a 2D dataset of two interlocking half-circles (moons).
+    A classic non-linear dataset to test complex boundaries.
+    """
+    if random_state is not None:
+        np.random.seed(random_state)
+        
+    n_samples_out = n_samples // 2
+    n_samples_in = n_samples - n_samples_out
+    
+    # Upper moon (Class 0)
+    outer_circ_x = np.cos(np.linspace(0, np.pi, n_samples_out))
+    outer_circ_y = np.sin(np.linspace(0, np.pi, n_samples_out))
+    
+    # Lower moon (Class 1), shifted over and down
+    inner_circ_x = 1 - np.cos(np.linspace(0, np.pi, n_samples_in))
+    inner_circ_y = 1 - np.sin(np.linspace(0, np.pi, n_samples_in)) - 0.5
+    
+    X = np.vstack([np.append(outer_circ_x, inner_circ_x),
+                   np.append(outer_circ_y, inner_circ_y)]).T
+    
+    y = np.hstack([np.zeros(n_samples_out, dtype=int),
+                   np.ones(n_samples_in, dtype=int)])
+                   
+    # Add random Gaussian noise
+    if noise is not None:
+        X += np.random.normal(scale=noise, size=X.shape)
+        
+    return X, y
+
+
+
+def make_circles(n_samples=100, factor=0.8, noise=None, random_state=None):
+    """
+    Generates a large circle containing a smaller circle in 2D.
+    A pure-Numpy replacement for sklearn.datasets.make_circles.
+    """
+    if random_state is not None:
+        np.random.seed(random_state)
+        
+    # 1. Split the data points evenly between the two circles
+    n_samples_out = n_samples // 2
+    n_samples_in = n_samples - n_samples_out
+    
+    # 2. Generate evenly spaced angles from 0 to 2*pi
+    linspace_out = np.linspace(0, 2 * np.pi, n_samples_out, endpoint=False)
+    linspace_in = np.linspace(0, 2 * np.pi, n_samples_in, endpoint=False)
+    
+    # 3. Calculate coordinates for the Outer Circle (radius = 1.0)
+    outer_circ_x = np.cos(linspace_out)
+    outer_circ_y = np.sin(linspace_out)
+    
+    # 4. Calculate coordinates for the Inner Circle (radius = factor)
+    inner_circ_x = factor * np.cos(linspace_in)
+    inner_circ_y = factor * np.sin(linspace_in)
+    
+    # 5. Stack the X and Y coordinates together into a single dataset
+    X = np.vstack([
+        np.append(outer_circ_x, inner_circ_x),
+        np.append(outer_circ_y, inner_circ_y)
+    ]).T
+    
+    # 6. Create the labels (0 for outer ring, 1 for inner core)
+    y = np.hstack([
+        np.zeros(n_samples_out, dtype=int),
+        np.ones(n_samples_in, dtype=int)
+    ])
+    
+    # 7. Sprinkle in the Gaussian noise to make it messy
+    if noise is not None:
+        X += np.random.normal(scale=noise, size=X.shape)
+        
+    # 8. Shuffle the dataset so the model doesn't just read it in order
+    indices = np.random.permutation(n_samples)
+    
+    return X[indices], y[indices]
