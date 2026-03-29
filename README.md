@@ -7,20 +7,24 @@ Machine Learning you can actually see.
 ![License](https://img.shields.io/badge/license-MIT-green)
 ---
 
-## Overview
+Overview
 
-**GlassBoxML** is a theory‑first machine learning library built from scratch in pure NumPy.
+GlassBoxML is a theory-first machine learning library built from scratch using pure NumPy.
 
-Unlike traditional libraries that prioritize convenience and abstraction, GlassBoxML prioritizes **understanding**. Every model exposes what it learns, how it learns, and when it fails.
+Unlike traditional libraries that prioritize abstraction and convenience, GlassBoxML emphasizes transparency and understanding. Every model exposes:
 
-This project exists to bridge the gap between mathematical learning theory and practical implementation.
+what it learns
+how it learns
+where it fails
 
----
+This project bridges the gap between mathematical learning theory and practical implementation.
 
-## Philosophy
 
-Most ML libraries are *black boxes*:
 
+
+Philosophy
+
+Most ML libraries behave like black boxes:
 ```
 model.fit(X, y)
 # magic happens
@@ -30,6 +34,7 @@ GlassBoxML is different:
 
 ```
 model.fit(X, y)
+
 model.loss_history
 model.gradients
 model.assumptions
@@ -39,26 +44,19 @@ model.generalization_estimate
 
 You don’t just train models — you inspect learning itself.
 
----
+Goals
+Implement core ML algorithms from first principles
+Expose optimization behavior during training
+Make model assumptions explicit
+Demonstrate overfitting and generalization
+Provide educational transparency without sacrificing code quality
+Non-Goals
+Competing with high-performance libraries like scikit-learn
+GPU acceleration
+Massive algorithm coverage
+Production deployment pipelines
 
-## Goals
-
-* Implement core ML algorithms from first principles
-* Expose optimization behavior during training
-* Make model assumptions explicit
-* Demonstrate overfitting and generalization
-* Provide educational transparency without sacrificing code quality
-
----
-
-## Non‑Goals
-
-* Competing with scikit‑learn performance
-* GPU acceleration
-* Supporting dozens of algorithms
-* Production deployment pipelines
-
-This is a learning and reasoning library, not a benchmark library.
+This is a learning and reasoning library, not a benchmarking tool.
 
 ---
 
@@ -70,6 +68,9 @@ This is a learning and reasoning library, not a benchmark library.
 * Logistic Regression
 * k‑Nearest Neighbors
 * Ridge Regression
+* Decision Trees
+* Random Forest
+* SVM
 
 ### Optimization
 
@@ -92,32 +93,32 @@ This is a learning and reasoning library, not a benchmark library.
 
 ---
 
-## Example
-
-```python
-from glassboxml.models import LinearRegression
+### Example
+```
+from glassboxml import LinearRegression
 
 model = LinearRegression()
 model.fit(X, y)
 
-print(model.training_error)
-print(model.generalization_estimate())
-print(model.assumptions())
-```
-
+print(model.loss_history)
+print(model.explain())
+print(model.diagnose())
 ---
+```
 
 ## Project Structure
 
 ```
 glassboxml/
 │
-├── core/          # losses, optimizers, base classes
+├── core/          # optimizers, model selection, base classes
 ├── models/        # ML algorithms
-├── diagnostics/   # overfitting & data issues
-├── theory/        # learning theory utilities
-├── datasets/      # synthetic generators
-└── examples/      # demonstrations & experiments
+├── diagnostics/   # overfitting & model insights
+├── datasets/      # synthetic data generators
+├── metrics/       # evaluation metrics
+├── preprocessing/ # scaling and transformations
+├── tuning/        # hyperparameter search
+└── examples/      # demos & experiments
 ```
 
 ---
@@ -139,9 +140,14 @@ Dependencies are intentionally minimal:
 
 ## Why This Project Exists
 
-Modern ML education often teaches usage before understanding. This leads to developers who can train models but cannot explain them, debug them, or trust them.
+Modern ML education often teaches usage before understanding.
 
-GlassBoxML is designed to reverse that order:
+This creates developers who can:
+
+train models ❌
+but not explain, debug, or trust them ❌
+
+GlassBoxML reverses that:
 
 **Understand → Implement → Experiment → Trust**
 
@@ -153,8 +159,8 @@ This project values clarity over cleverness.
 
 Contributions should:
 
-* Prefer readable math‑aligned code
-* Include explanation comments
-* Demonstrate failure cases, not only success
+Prefer readable, math-aligned code
+Include explanation comments
+Demonstrate failure cases, not just success
 
 ---
