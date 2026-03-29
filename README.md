@@ -2,7 +2,9 @@
 
 Machine Learning you can actually see.
 
-![Tech Stack](https://img.shields.io/badge/Stack-%20Python-blue?style=for-the-badge)
+![Python](https://img.shields.io/badge/python-3.9+-blue)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-green)
 ---
 
 ## Overview
