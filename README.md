@@ -102,7 +102,7 @@ model.fit(X, y)
 
 print(model.loss_history)
 print(model.explain())
-print(model.diagnose())
+print(model.diagnose()) # basic model insights (expanded in future versions)
 ---
 ```
 
