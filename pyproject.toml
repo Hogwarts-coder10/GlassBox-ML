@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glassboxml"
+version = "0.1.0"
+description = "A transparent ML framework with explainability and diagnostics"
+authors = [
+    { name = "V SS Karthik" },
+    { email = "vsskartheek@gmail.com"}
+]
+dependencies = [
+    "numpy",
+    "matplotlib"
+]
+requires-python = ">=3.9"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["glassboxml*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
