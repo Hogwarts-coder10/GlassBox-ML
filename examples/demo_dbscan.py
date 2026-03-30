@@ -1,15 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Route Python to your GlassBoxML root directory
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from datasets.generators import make_moons
-from core.preprocessing import StandardScaler
-from models.dbscan import DBSCAN
-# If you want a side-by-side comparison and have your K-Means ready:
-# from models.kmeans import KMeansClustering 
+from glassboxml.datasets import make_moons
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.models import DBSCAN
 
 def main():
     print("==================================================")
