@@ -1,15 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Route Python to your GlassBoxML root directory
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from glassboxml.datasets import make_circles
+from glassboxml.preprocessing import StandardScaler
 
-from datasets.generators import make_circles
-from core.preprocessing import StandardScaler
-
-# Import your DBSCAN model!
-from models.dbscan import DBSCAN 
+from glassboxml.models import DBSCAN 
 
 def main():
     print("==================================================")
