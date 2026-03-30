@@ -1,18 +1,17 @@
 import numpy as np
-import sys, os
+import sys,os
 import time
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.model_selection import train_test_split
-from core.preprocessing import StandardScaler
-from metrics.regression import mean_squared_error, r2_score
+from glassboxml.core import train_test_split
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.metrics import mean_squared_error, r2_score
 
-# Import the GlassBox Arsenal (Regression Edition)
-from models.decision_tree import DecisionTreeRegressor
-from models.random_forest import RandomForestRegressor
-from models.svm import SupportVectorRegressor
-from models.gradientboost import GradientBoostingRegressor
+from glassboxml.models import (
+    DecisionTreeRegressor,
+    RandomForestRegressor,
+    SupportVectorRegressor,
+    GradienBoostingRegressor
+)
 
 def main():
     print("==================================================")
