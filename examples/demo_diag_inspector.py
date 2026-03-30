@@ -1,10 +1,7 @@
 import numpy as np
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from diagnostics.inspector import DataInspector
-from datasets.generators import make_regression, make_blobs
+from glassboxml.diagnostics import DataInspector
+from glassboxml.datasets import make_regression, make_blobs
 
 def main():
     print("--- GlassBox-ML Demo: Data Diagnostics ---\n")
