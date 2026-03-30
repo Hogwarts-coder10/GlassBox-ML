@@ -1,14 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# ADJUST THIS IMPORT TO WHEREVER YOUR K-MEANS FILE IS RIGHT NOW!
-# e.g., from models.clustering.kmeans import KMeansClustering
-from models.kmeans import KMeansClustering 
-from datasets.generators import make_moons
+from glassboxml.models import KMeansClustering 
+from glassboxml.datasets import make_moons
 
 def main():
     print("--- GlassBox-ML Demo: K-Means Clustering ---\n")
