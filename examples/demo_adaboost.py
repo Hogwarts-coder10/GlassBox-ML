@@ -1,11 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
 # Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.adaboost import AdaBoostClassifier
-from datasets.generators import make_moons  # Look at us, no sklearn!
+from glassboxml.models import AdaBoostClassifier
+from glassboxml.datasets import make_moons  
 
 def main():
     print("--- GlassBox-ML Demo: AdaBoost ---\n")
