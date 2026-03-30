@@ -1,11 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys,os
 
-# Setup path to find the core and models folders
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.preprocessing import StandardScaler
-from models.pca import PCA
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.models import PCA
 
 def main():
     print("--- GlassBox-ML Demo: Principal Component Analysis (PCA) ---\n")
