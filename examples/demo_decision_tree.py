@@ -1,11 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path to find the core, models, and datasets folders
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.decision_tree import DecisionTreeClassifier
-from datasets.generators import make_blobs
+from glassboxml.models import DecisionTreeClassifier
+from glassboxml.datasets import make_blobs
 
 def main():
     print("--- GlassBox-ML Demo: Decision Tree Classifier ---\n")
