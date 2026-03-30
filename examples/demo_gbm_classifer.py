@@ -1,11 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.gradientboost import GradientBoostingClassifier
-from datasets.generators import make_donut
+from glassboxml.models import GradientBoostingClassifier
+from glassboxml.datasets import make_donut
 
 def main():
     print("--- GlassBox-ML Demo: Gradient Boosting Classifier ---\n")
