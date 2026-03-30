@@ -1,13 +1,10 @@
 import numpy as np
-import sys, os
-
 # Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.model_selection import train_test_split
-from metrics.classification import classification_report
-from metrics.confusion_matrix import plot_confusion_matrix
-from models.random_forest import RandomForestClassifier
-from datasets.generators import make_blobs
+
+from glassboxml.core import train_test_split
+from glassboxml.metrics import classification_report, plot_confusion_matrix
+from glassboxml.models import RandomForestClassifier
+from glassboxml.datasets import make_blobs
 
 def main():
     print("--- GlassBox-ML: The Confusion Matrix ---\n")
