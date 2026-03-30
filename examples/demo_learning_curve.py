@@ -1,11 +1,8 @@
 import numpy as np
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.decision_tree import DecisionTreeClassifier
-from datasets.generators import make_blobs
-from diagnostics.learning_curve import LearningCurveAnalyzer
+from glassboxml.models import DecisionTreeClassifier
+from glassboxml.datasets import make_blobs
+from glassboxml.diagnostics import LearningCurveAnalyzer
 
 def main():
     print("--- GlassBox-ML Diagnostic: Learning Curves ---\n")
