@@ -1,12 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.optimizer import Momentum
-from models.linear_regression import LinearRegression
-from models.ridge_regression import RidgeRegression
-from core.preprocessing import StandardScaler
+from glassboxml.core import Momentum
+from glassboxml.models import LinearRegression, RidgeRegression
+from glassboxml.preprocessing import StandardScaler
 
 def main():
     print("--- GlassBox-ML Demo: Ridge vs. Standard Linear Regression ---")
