@@ -1,12 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.optimizer import Momentum
-from core.preprocessing import StandardScaler
-from models.logistic_regression import LogisticRegression
-from datasets.generators import make_blobs
+from glassboxml.core import Momentum
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.models import LogisticRegression
+from glassboxml.datasets import make_blobs
 
 def main():
     print("--- GlassBox-ML Demo: Logistic Regression (BCE vs MSE) ---")
