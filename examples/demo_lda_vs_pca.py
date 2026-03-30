@@ -1,13 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.preprocessing import StandardScaler
-from models.pca import PCA
-from models.lda import LDA
-from datasets.generators import make_stretched_blobs
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.models import PCA, LDA
+from glassboxml.datasets import make_stretched_blobs
 
 def main():
     print("--- GlassBox-ML Showdown: PCA vs. LDA ---\n")
