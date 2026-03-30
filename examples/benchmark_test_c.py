@@ -1,24 +1,21 @@
 import numpy as np
-import sys, os
 import time
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.model_selection import train_test_split
-from core.preprocessing import StandardScaler
-from core.optimizer import GradientDescent 
-from metrics.classification import accuracy_score
-from datasets.generators import make_moons
+from glassboxml.core import train_test_split
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.core import GradientDescent 
+from glassboxml.metrics import accuracy_score
+from glassboxml.datasets import make_moons
 
-# Import the GlassBox Arsenal
-from models.logistic_regression import LogisticRegression
-from models.knn import KNNClassifier
-from models.decision_tree import DecisionTreeClassifier
-from models.random_forest import RandomForestClassifier
-from models.svm import SupportVectorMachine
-from models.adaboost import AdaBoostClassifier
-from models.gradientboost import GradientBoostingClassifier
-
+from glassboxml.models import (
+    LogisticRegression,
+    KNNClassifier,
+    DecisionTreeClassifier,
+    RandomForestClassifier,
+    SVM,
+    AdaBoostClassifier,
+    GradientBoostingClassifier
+)
 def main():
     print("==================================================")
     print("      GlassBox-ML: Classifier Leaderboard         ")
