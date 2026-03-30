@@ -1,10 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.gradientboost import GradientBoostingRegressor
+from glassboxml.models import GradientBoostingRegressor
 
 def main():
     print("--- GlassBox-ML Demo: Gradient Boosting ---\n")
