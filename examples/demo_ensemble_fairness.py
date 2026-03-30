@@ -1,12 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.random_forest import RandomForestClassifier
-from datasets.generators import make_blobs
-from diagnostics.learning_curve import LearningCurveAnalyzer
-from diagnostics.fairness import FairnessAnalyzer
+from glassboxml.models import RandomForestClassifier
+from glassboxml.datasets import make_blobs 
+from glassboxml.diagnostics import FairnessAnalyzer, LearningCurveAnalyzer
 
 def main():
     print("--- GlassBox-ML: Random Forest & Fairness Demo ---\n")
