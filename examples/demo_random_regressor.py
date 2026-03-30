@@ -1,11 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.decision_tree import DecisionTreeRegressor
-from models.random_forest import RandomForestRegressor
+from glassboxml.models import DecisionTreeRegressor, RandomForestRegressor
 
 def main():
     print("--- GlassBox-ML Demo: Random Forest Regressor ---\n")
