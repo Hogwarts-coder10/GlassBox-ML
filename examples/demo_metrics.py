@@ -1,10 +1,6 @@
 import numpy as np
-import sys, os
 
-# Setup path to find the core folder
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from core.metrics import classification_report, confusion_matrix
+from glassboxml.metrics import classification_report, confusion_matrix
 
 def main():
     print("--- GlassBox-ML Demo: Metrics & The Accuracy Paradox ---")
