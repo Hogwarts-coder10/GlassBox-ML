@@ -1,11 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.optimizer import Momentum
-from models.linear_regression import LinearRegression
-from datasets.generators import make_regression
+from glassboxml.core import Momentum
+from glassboxml.models import LinearRegression
+from glassboxml.datasets import make_regression
 
 def main():
     print("--- GlassBox-ML Demo: Linear Regression ---")
