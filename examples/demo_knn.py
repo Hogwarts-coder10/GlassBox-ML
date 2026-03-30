@@ -1,10 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path to find the core and models folders
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from models.knn import KNNClassifier
+from glassboxml.models import KNNClassifier
 
 def main():
     print("--- GlassBox-ML Test: KNN with Boundary Mapping ---\n")
