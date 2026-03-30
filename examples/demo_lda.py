@@ -1,14 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path to find the core, models, and datasets folders
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.preprocessing import StandardScaler
-from models.lda import LDA
-
-# Import our brand new GlassBox dataset generator!
-from datasets.generators import make_blobs
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.models import LDA
+from glassboxml.datasets import make_blobs
 
 def main():
     print("--- GlassBox-ML Test: Linear Discriminant Analysis (LDA) ---\n")
