@@ -1,12 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from core.optimizer import Momentum
-from core.preprocessing import StandardScaler, PolynomialFeatures
-from models.linear_regression import LinearRegression
+from glassboxml.core import Momentum
+from glassboxml.preprocessing import StandardScaler, PolynomialFeatures
+from glassboxml.models import LinearRegression
 
 def main():
     print("--- GlassBox-ML Demo: Polynomial Capacity & Overfitting ---")
