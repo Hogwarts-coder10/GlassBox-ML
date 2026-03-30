@@ -1,12 +1,9 @@
 import numpy as np
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.model_selection import train_test_split
-from metrics.classification import accuracy_score, classification_report
-from models.random_forest import RandomForestClassifier
-from datasets.generators import make_blobs
+from glassboxml.core import train_test_split
+from glassboxml.metrics import accuracy_score, classification_report
+from glassboxml.models import RandomForestClassifier
+from glassboxml.datasets import make_blobs
 
 def main():
     print("--- GlassBox-ML: The Train/Test Split ---\n")
