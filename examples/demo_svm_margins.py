@@ -1,12 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
 
-# Setup path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.preprocessing import StandardScaler
-from models.svm import SupportVectorMachine
-from datasets.generators import make_blobs
+from glassboxml.preprocessing import StandardScaler
+from glassboxml.models import SVM
+from glassboxml.datasets import make_blobs
 
 def main():
     print("--- GlassBox-ML Demo: Hard vs. Soft Margin SVM ---\n")
@@ -24,7 +21,7 @@ def main():
     
     # 2. Train a "Hard" Margin SVM (Low Lambda)
     print("Training Rigid SVM (Hard Margin approximation)...")
-    svm_hard = SupportVectorMachine(learning_rate=0.001, lambda_param=0.001, n_iters=1000)
+    svm_hard = SVM(learning_rate=0.001, lambda_param=0.001, n_iters=1000)
     svm_hard.fit(X_scaled, y)
     
     # 3. Train a "Soft" Margin SVM (High Lambda)
