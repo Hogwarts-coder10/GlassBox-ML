@@ -7,6 +7,11 @@ Machine Learning you can actually see.
 ![License](https://img.shields.io/badge/license-MIT-green)
 ---
 
+## 🚀 Version
+- Current Release: v0.1.0
+
+---
+
 Overview
 
 GlassBoxML is a theory-first machine learning library built from scratch using pure NumPy.
@@ -124,20 +129,44 @@ glassboxml/
 ---
 
 ## Installation
+  For Contributors
 
 ```bash
 git clone https://github.com/hogwarts-coder10/GlassBox-ML.git
 cd GlassBox-ML
-pip install -r requirements.txt
+pip install -e.
 ```
 
-Dependencies are intentionally minimal:
 
-* numpy
-* matplotlib
+For users
+  ``` bash
+  pip install glassboxml
+  ```
+---
+
+## 🔧 Dependencies
+GlassBoxML is designed to be light-weight
+- numpy
+- matplotlib
 
 ---
 
+## ⚡ Quick Start 
+```
+from glassboxml.models import LogisticRegression
+
+# Sample Data
+X = [[1,2],[2,3],[3,4]]
+y = [0,1,1]
+
+model = LogisiticRegression()
+model.fit(X,y)
+
+preds = moedel.predict(X)
+print(preds)
+
+```
+---
 ## Why This Project Exists
 
 Modern ML education often teaches usage before understanding.
@@ -150,6 +179,11 @@ but not explain, debug, or trust them ❌
 GlassBoxML reverses that:
 
 **Understand → Implement → Experiment → Trust**
+
+---
+### 📚 Documentation
+
+Check out the full documentation here: 👉🏻 https://github.com/Hogwarts-coder10/GlassBox-ML/wiki
 
 ---
 
