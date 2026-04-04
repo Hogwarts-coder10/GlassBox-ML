@@ -198,3 +198,38 @@ Include explanation comments
 Demonstrate failure cases, not just success
 
 ---
+
+
+## 🚀 Upcoming Features (v0.1.1 and beyond)
+
+GlassBoxML will expand to include core preprocessing and feature engineering tools with deep interpretability.
+
+### 🧩 Planned Additions
+
+* **TF-IDF Vectorizer**
+
+  * Transparent text feature extraction
+  * Full explanation of term weighting and normalization
+
+* **Label Encoder**
+
+  * Clear mapping of categorical values
+  * Diagnostics for unseen or imbalanced labels
+
+### 🔍 Enhanced Explainability
+
+All new components will integrate with:
+
+* `explain()` → step-by-step breakdown of transformations
+* `diagnose()` → insights into data quality and potential issues
+
+### 🧠 API Improvements
+
+* Cleaner and more intuitive public API
+* Reduced exposure of internal components
+* Better consistency across models and utilities
+
+---
+
+GlassBoxML continues to focus on making machine learning **understandable, not just usable**.
+
