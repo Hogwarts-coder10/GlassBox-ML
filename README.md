@@ -8,7 +8,7 @@ Machine Learning you can actually see.
 ---
 
 ## 🚀 Version
-- Current Release: v0.1.0
+- Current Release: v0.1.2
 
 ---
 
@@ -95,6 +95,9 @@ This is a learning and reasoning library, not a benchmarking tool.
 * Generalization estimates
 * Capacity indicators
 * Noise sensitivity analysis
+
+### Feature Extraction
+* TfidfVectorizer ( Coming in v0.1.3)
 
 ---
 
