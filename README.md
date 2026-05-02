@@ -97,7 +97,7 @@ This is a learning and reasoning library, not a benchmarking tool.
 * Noise sensitivity analysis
 
 ### Feature Extraction
-* TfidfVectorizer ( Coming in v0.1.3)
+* TfidfVectorizer
 
 ---
 
