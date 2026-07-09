@@ -2,7 +2,7 @@ import numpy as np
 from typing import Union, List, Optional
 
 # Adjust path if your base class is elsewhere
-from glassboxml.core._base_model import GlassBoxModel
+from glassboxml.core.base_model import GlassBoxModel
 
 class LabelEncoder(GlassBoxModel):
     """
