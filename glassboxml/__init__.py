@@ -8,4 +8,4 @@ from .feature_extraction import *
 
 from .core.model_selection import train_test_split
 from .core.optimizer import Momentum
-from .core.pipeline import Pipeline
+from .core._pipeline import Pipeline
