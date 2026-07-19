@@ -1,23 +1,26 @@
 import numpy as np
+
 from glassboxml.core._base_model import GlassBoxModel
+from glassboxml.core._optimizer import GradientDescent
+
 
 class LogisticRegression(GlassBoxModel):
     """Transparent Logistic Regression for binary classification."""
-    
-    def __init__(self, optimizer, epochs=1000, threshold=0.5, loss_function='bce'):
+
+    def __init__(self, optimizer=None, epochs=1000, threshold=0.5, loss_function="bce"):
         super().__init__()
-        self.optimizer = optimizer
+        self.optimizer = optimizer if optimizer is not None else GradientDescent()
         self.epochs = epochs
         self.threshold = threshold
         self.loss_function = loss_function.lower()
 
     def _sigmoid(self, z):
-        z = np.clip(z, -250, 250) 
+        z = np.clip(z, -250, 250)
         return 1 / (1 + np.exp(-z))
 
     def check_assumptions(self, X, y):
         self.failure_modes = []
-        if self.loss_function == 'mse':
+        if self.loss_function == "mse":
             self.failure_modes.append(
                 "EDUCATIONAL WARNING: You are using MSE for classification. "
                 "Expect vanishing gradients and poor convergence."
@@ -32,42 +35,48 @@ class LogisticRegression(GlassBoxModel):
     def fit(self, X, y):
         self._store_dataset_stats(X)
         n_samples, n_features = X.shape
-        
+
         self.coef_ = np.zeros(n_features)
         self.intercept_ = 0.0
-        
+
         self.check_assumptions(X, y)
 
         for epoch in range(self.epochs):
             # 1. Forward Pass
             linear_model = np.dot(X, self.coef_) + self.intercept_
             y_pred = self._sigmoid(linear_model)
-            
+
             # 2. Compute Loss & Gradients
-            if self.loss_function == 'bce':
+            if self.loss_function == "bce":
                 epsilon = 1e-9
-                loss = -(1 / n_samples) * np.sum(y * np.log(y_pred + epsilon) + (1 - y) * np.log(1 - y_pred + epsilon))
+                loss = -(1 / n_samples) * np.sum(
+                    y * np.log(y_pred + epsilon)
+                    + (1 - y) * np.log(1 - y_pred + epsilon)
+                )
                 grads = {
-                    'dw': (1 / n_samples) * np.dot(X.T, (y_pred - y)),
-                    'db': (1 / n_samples) * np.sum(y_pred - y)
+                    "dw": (1 / n_samples) * np.dot(X.T, (y_pred - y)),
+                    "db": (1 / n_samples) * np.sum(y_pred - y),
                 }
-            elif self.loss_function == 'mse':
+            elif self.loss_function == "mse":
                 loss = (1 / (2 * n_samples)) * np.sum((y_pred - y) ** 2)
                 sigmoid_derivative = y_pred * (1 - y_pred)
                 error_term = (y_pred - y) * sigmoid_derivative
                 grads = {
-                    'dw': (1 / n_samples) * np.dot(X.T, error_term),
-                    'db': (1 / n_samples) * np.sum(error_term)
+                    "dw": (1 / n_samples) * np.dot(X.T, error_term),
+                    "db": (1 / n_samples) * np.sum(error_term),
                 }
-            
+
             # 3. Clean One-Liner Optimizer Update
             self.coef_, self.intercept_ = self.optimizer.update(
-                self.coef_, self.intercept_, grads['dw'], grads['db']
+                self.coef_, self.intercept_, grads["dw"], grads["db"]
             )
-            
+
             # 4. Record Step
-            self._record_step(epoch_loss=loss, epoch_gradients={'dw': grads['dw'].copy(), 'db': grads['db']})
-            
+            self._record_step(
+                epoch_loss=loss,
+                epoch_gradients={"dw": grads["dw"].copy(), "db": grads["db"]},
+            )
+
         self.is_fitted = True
         self.training_error = self.loss_history[-1]
 
@@ -83,7 +92,7 @@ class LogisticRegression(GlassBoxModel):
     def explain(self):
         if not self.is_fitted:
             return "Model is not fitted."
-            
+
         return (
             "--- GlassBox Explanation: Logistic Regression ---\n"
             f"Decision Boundary (Log-Odds): X * {np.round(self.coef_, 4)} + {self.intercept_:.4f} = 0\n"

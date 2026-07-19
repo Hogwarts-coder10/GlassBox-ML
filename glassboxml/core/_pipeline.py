@@ -1,7 +1,11 @@
-import numpy as np
+from __future__ import annotations
+
 from typing import Any, Union
 
+import numpy as np
+
 from glassboxml.core._base_model import GlassBoxModel
+
 
 class Pipeline(GlassBoxModel):
     """
@@ -11,22 +15,21 @@ class Pipeline(GlassBoxModel):
     during training (.fit) is automatically applied during inference (.predict).
     """
 
-    def __init__(self,steps: list[tuple[str,GlassBoxModel]]):
+    def __init__(self, steps: list[tuple[str, GlassBoxModel]]):
         super().__init__()
 
-        if not steps or not isinstance(steps,list):
+        if not steps or not isinstance(steps, list):
             raise ValueError("Pipeline requires a list of (name,model) tuples")
 
         # Validate all steps before the .transform() method
-        for name,step in steps[:-1]:
-            if not hasattr(step, 'transform'):
-                raise TypeError(f"Intermediate step '{name}' must implement .transform().")
-
+        for name, step in steps[:-1]:
+            if not hasattr(step, "transform"):
+                raise TypeError(
+                    f"Intermediate step '{name}' must implement .transform()."
+                )
 
         self.steps = steps
         self.is_fitted = False
-
-
 
     def fit(self, X: Any, y: Any = None) -> Pipeline:
         """
@@ -39,11 +42,10 @@ class Pipeline(GlassBoxModel):
             X_transformed = step.fit_transform(X_transformed, y)
 
         final_steps = self.steps[-1][1]
-        final_steps.fit(X_transformed,y)
+        final_steps.fit(X_transformed, y)
 
         self.is_fitted = True
         return self
-
 
     def transform(self, X: Any) -> Any:
         """
@@ -55,8 +57,8 @@ class Pipeline(GlassBoxModel):
 
         X_transformed = X
         for name, step in self.steps:
-            if not hasattr(step, 'transform'):
-                    raise TypeError(f"Step '{name}' does not support .transform().")
+            if not hasattr(step, "transform"):
+                raise TypeError(f"Step '{name}' does not support .transform().")
             X_transformed = step.transform(X_transformed)
 
         return X_transformed
@@ -74,7 +76,7 @@ class Pipeline(GlassBoxModel):
 
         # The final step MUST support transform to use fit_transform on the pipeline
         final_step = self.steps[-1][1]
-        if not hasattr(final_step, 'transform'):
+        if not hasattr(final_step, "transform"):
             raise TypeError(
                 f"Final step '{self.steps[-1][0]}' does not support .transform(). "
                 "Pipeline.fit_transform() requires all steps to be Transformers."
@@ -102,15 +104,16 @@ class Pipeline(GlassBoxModel):
 
         # Pass the mathematically formatted data to the final engine
         final_step = self.steps[-1][1]
-        if not hasattr(final_step, 'predict'):
-                raise TypeError(f"Final step '{self.steps[-1][0]}' does not support .predict().")
+        if not hasattr(final_step, "predict"):
+            raise TypeError(
+                f"Final step '{self.steps[-1][0]}' does not support .predict()."
+            )
 
         return final_step.predict(X_transformed)
 
     def explain(self) -> str:
         if not self.is_fitted:
             return "Pipeline hasn't been fitted yet"
-
 
         explanation = "========================================\n"
         explanation += " GlassBox Explanation: Execution Pipeline \n"
@@ -124,6 +127,5 @@ class Pipeline(GlassBoxModel):
 
             if i < len(self.steps) - 1:
                 explanation += "          |\n          v\n"
-
 
         return explanation
