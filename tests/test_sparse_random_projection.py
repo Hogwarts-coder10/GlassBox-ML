@@ -1,12 +1,12 @@
 import numpy as np
 import pytest
 
-from glassboxml.models.sparse_random_projection import SparseRandomProjection
-
+from glassboxml.models import SparseRandomProjection
 
 # -------------------------------
 # Fixtures
 # -------------------------------
+
 
 @pytest.fixture
 def sample_data():
@@ -17,6 +17,7 @@ def sample_data():
 # -------------------------------
 # Core Functionality
 # -------------------------------
+
 
 def test_fit_does_not_crash(sample_data):
     model = SparseRandomProjection(n_components=10, random_state=42)
@@ -34,6 +35,7 @@ def test_transform_shape(sample_data):
 # Determinism
 # -------------------------------
 
+
 def test_deterministic_projection(sample_data):
     model1 = SparseRandomProjection(n_components=10, random_state=42)
     model2 = SparseRandomProjection(n_components=10, random_state=42)
@@ -47,6 +49,7 @@ def test_deterministic_projection(sample_data):
 # -------------------------------
 # Distance Preservation
 # -------------------------------
+
 
 def test_distance_preservation(sample_data):
     model = SparseRandomProjection(n_components=20, random_state=42)
@@ -65,6 +68,7 @@ def test_distance_preservation(sample_data):
 # -------------------------------
 # Edge Cases
 # -------------------------------
+
 
 def test_transform_without_fit_raises(sample_data):
     model = SparseRandomProjection(n_components=10)
@@ -96,6 +100,7 @@ def test_feature_mismatch(sample_data):
 # -------------------------------
 # Explainability & Diagnostics
 # -------------------------------
+
 
 def test_explain_returns_string(sample_data):
     model = SparseRandomProjection(n_components=10, random_state=42)

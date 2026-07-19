@@ -1,6 +1,7 @@
 import numpy as np
+
+from glassboxml.core import Momentum
 from glassboxml.models import LogisticRegression
-from glassboxml.core.optimizer import Momentum
 
 
 def generate_data():
@@ -13,10 +14,7 @@ def generate_data():
 def test_logistic_regression():
     X, y = generate_data()
 
-    model = LogisticRegression(
-        optimizer=Momentum(learning_rate=0.1),
-        epochs=200
-    )
+    model = LogisticRegression(optimizer=Momentum(learning_rate=0.1), epochs=200)
 
     model.fit(X, y)
     preds = model.predict(X)

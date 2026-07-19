@@ -1,6 +1,7 @@
 import numpy as np
-from glassboxml.models import RidgeRegression, LassoRegression
-from glassboxml.core.optimizer import Momentum
+
+from glassboxml.core import Momentum
+from glassboxml.models import LassoRegression, RidgeRegression
 
 
 def generate_data():
@@ -13,10 +14,7 @@ def generate_data():
 def test_ridge():
     X, y = generate_data()
 
-    model = RidgeRegression(
-        optimizer=Momentum(learning_rate=0.1),
-        epochs=100
-    )
+    model = RidgeRegression(optimizer=Momentum(learning_rate=0.1), epochs=100)
 
     model.fit(X, y)
     preds = model.predict(X)
@@ -30,10 +28,7 @@ def test_ridge():
 def test_lasso():
     X, y = generate_data()
 
-    model = LassoRegression(
-        optimizer=Momentum(learning_rate=0.1),
-        epochs=100
-    )
+    model = LassoRegression(optimizer=Momentum(learning_rate=0.1), epochs=100)
 
     model.fit(X, y)
     preds = model.predict(X)
