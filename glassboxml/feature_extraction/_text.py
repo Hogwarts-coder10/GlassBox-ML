@@ -1,10 +1,14 @@
+from __future__ import annotations
+
+import re
+from collections import Counter
+from typing import List, Optional, Union
+
 import numpy as np
 import scipy.sparse as sp
-import re
-from typing import Optional
-from collections import Counter
 
 from glassboxml.core._base_model import GlassBoxModel
+
 
 class TfidfVectorizer(GlassBoxModel):
     """
@@ -31,10 +35,12 @@ class TfidfVectorizer(GlassBoxModel):
 
     def _tokenize(self, text: str) -> list[str]:
         text = text.lower()
-        return re.findall(r'(?u)\b\w\w+\b', text)
+        return re.findall(r"(?u)\b\w\w+\b", text)
 
     def fit(self, raw_documents: list[str], y=None) -> "TfidfVectorizer":
-        if not isinstance(raw_documents, list) or not all(isinstance(d, str) for d in raw_documents):
+        if not isinstance(raw_documents, list) or not all(
+            isinstance(d, str) for d in raw_documents
+        ):
             raise TypeError("Input must be a list of strings.")
 
         n_samples = len(raw_documents)
@@ -87,7 +93,11 @@ class TfidfVectorizer(GlassBoxModel):
                         cols.append(vocab_idx)
                         data.append(count * self.idf_[vocab_idx])
 
-            tfidf_matrix = sp.csr_matrix((data, (rows, cols)), shape=(n_samples, self.n_features_), dtype=np.float64)
+            tfidf_matrix = sp.csr_matrix(
+                (data, (rows, cols)),
+                shape=(n_samples, self.n_features_),
+                dtype=np.float64,
+            )
 
             # Vectorized Sparse L2 Normalization
             sq_sum = tfidf_matrix.multiply(tfidf_matrix).sum(axis=1)
@@ -117,11 +127,13 @@ class TfidfVectorizer(GlassBoxModel):
 
             return tfidf_matrix
 
-    def fit_transform(self, raw_documents: List[str], y=None) -> Union[np.ndarray, sp.csr_matrix]:
+    def fit_transform(
+        self, raw_documents: List[str], y=None
+    ) -> Union[np.ndarray, sp.csr_matrix]:
         self.fit(raw_documents)
         return self.transform(raw_documents)
-    
-    def predict(self,X):
+
+    def predict(self, X):
         """
         Transformers map data into new feature spaces; they do not make predictions.
         """
@@ -130,20 +142,25 @@ class TfidfVectorizer(GlassBoxModel):
             "TfidfVectorizer is a Transformer, not a Predictor. "
             "Use .transform() or .fit_transform() instead."
         )
-    
 
     def explain(self) -> str:
         if not self.is_fitted:
             return "Model is not fitted yet."
 
-        engine_type = "SciPy CSR (Optimized)" if self.mode == "sparse" else "NumPy Dense (Educational)"
+        engine_type = (
+            "SciPy CSR (Optimized)"
+            if self.mode == "sparse"
+            else "NumPy Dense (Educational)"
+        )
 
         explanation = "--- GlassBox Explanation: TF-IDF Vectorizer ---\n"
         explanation += f"Active Engine: {engine_type}\n"
         explanation += f"Vocabulary Size: {self.n_features_} unique terms.\n"
         explanation += f"Matrix shape: {self.n_features_} features\n"  # 🚀 Your upgrade
 
-        sorted_vocab = sorted(self.vocabulary_.keys(), key=lambda x: self.idf_[self.vocabulary_[x]])
+        sorted_vocab = sorted(
+            self.vocabulary_.keys(), key=lambda x: self.idf_[self.vocabulary_[x]]
+        )
         explanation += f"Most common (lowest weight) terms: {sorted_vocab[:3]}\n"
         explanation += f"Most specific (highest weight) terms: {sorted_vocab[-3:]}\n"
 
