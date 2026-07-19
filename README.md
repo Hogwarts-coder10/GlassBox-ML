@@ -5,6 +5,7 @@ Machine Learning you can actually see.
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![PyPI](https://img.shields.io/badge/pypi-v0.2.0-blue)
 ---
 
 Overview
@@ -42,7 +43,7 @@ model.failure_modes
 model.generalization_estimate
 ```
 
-You don’t just train models — you inspect learning itself.
+You don't just train models — you inspect learning itself.
 
 Goals
 Implement core ML algorithms from first principles
@@ -68,6 +69,7 @@ This is a learning and reasoning library, not a benchmarking tool.
 * Logistic Regression
 * k‑Nearest Neighbors
 * Ridge Regression
+* Lasso Regression
 * Decision Trees
 * Random Forest
 * SVM
@@ -87,14 +89,20 @@ This is a learning and reasoning library, not a benchmarking tool.
 
 ### Theory Tools
 
-* Generalization estimates
+* Generalization estimates — implemented as `model.generalization_estimate`, a lightweight, capacity-vs-sample-size heuristic that works without a held-out validation set
 * Capacity indicators
 * Noise sensitivity analysis
+
+### Feature Extraction & Pipelines
+
+* TF-IDF Vectorizer (sparse and dense modes)
+* Sparse Random Projection
+* `Pipeline` for chaining preprocessing and models
 
 ---
 
 ### Example
-```
+```python
 from glassboxml import LinearRegression
 
 model = LinearRegression()
@@ -102,8 +110,7 @@ model.fit(X, y)
 
 print(model.loss_history)
 print(model.explain())
-print(model.diagnose()) # basic model insights (expanded in future versions)
----
+print(model.diagnose())  # dataset profile, training error, failure modes, and generalization_estimate
 ```
 
 ## Project Structure
@@ -111,19 +118,28 @@ print(model.diagnose()) # basic model insights (expanded in future versions)
 ```
 glassboxml/
 │
-├── core/          # optimizers, model selection, base classes
-├── models/        # ML algorithms
-├── diagnostics/   # overfitting & model insights
-├── datasets/      # synthetic data generators
-├── metrics/       # evaluation metrics
-├── preprocessing/ # scaling and transformations
-├── tuning/        # hyperparameter search
-└── examples/      # demos & experiments
+├── core/               # optimizers, model selection, Pipeline, base classes
+├── models/             # ML algorithms
+├── diagnostics/        # overfitting & model insights
+├── datasets/           # synthetic data generators
+├── metrics/            # evaluation metrics
+├── preprocessing/      # scaling and transformations
+├── feature_extraction/ # TF-IDF vectorizer
+├── tuning/             # hyperparameter search
+└── examples/           # demos & experiments
 ```
 
 ---
 
 ## Installation
+
+From PyPI:
+
+```bash
+pip install glassboxml
+```
+
+From source:
 
 ```bash
 git clone https://github.com/hogwarts-coder10/GlassBox-ML.git
@@ -135,6 +151,7 @@ Dependencies are intentionally minimal:
 
 * numpy
 * matplotlib
+* scipy
 
 ---
 

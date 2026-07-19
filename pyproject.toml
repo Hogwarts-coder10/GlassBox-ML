@@ -1,23 +1,23 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=77.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "glassboxml"
-version = "0.1.0"
+version = "0.2.0"
 description = "A transparent machine learning framework focused on explainability and diagnostics."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 
 authors = [
-  { name = "V SS Karthik", email = "vsskartheek@gmail.com" }
+  { name = "V SS Karthik"}
 ]
 
 dependencies = [
-  "numpy",
-  "matplotlib",
-  "scipy"
+  "numpy>=1.26,<3.0",
+  "matplotlib>=3.8,<4.0",
+  "scipy>=1.11,<2.0"
 ]
 
 keywords = ["machine learning", "ml", "xai", "glassbox"]
@@ -32,4 +32,5 @@ classifiers = [
 Homepage = "https://github.com/hogwarts-coder10/GlassBox-ML"
 
 [tool.setuptools.packages.find]
-where = ["."]
+include = ["glassboxml*"]
+exclude = ["tests*", "examples*", "data*", "Lib*", "Scripts*", "Include*", "*.egg-info*"]
