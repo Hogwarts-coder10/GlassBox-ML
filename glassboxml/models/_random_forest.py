@@ -1,7 +1,11 @@
 import numpy as np
+
 from glassboxml.core._base_model import GlassBoxModel
-from glassboxml.models._decision_tree import DecisionTreeClassifier
-from glassboxml.models._decision_tree import DecisionTreeRegressor
+from glassboxml.models._decision_tree import (
+    DecisionTreeClassifier,
+    DecisionTreeRegressor,
+)
+
 
 class RandomForestClassifier(GlassBoxModel):
     """
@@ -9,9 +13,9 @@ class RandomForestClassifier(GlassBoxModel):
     An ensemble method that trains multiple Decision Trees on random subsets
     of the data to prevent overfitting (Bagging).
     """
+
     def __init__(self, n_trees=10, max_depth=10, min_samples_split=2):
         super().__init__()
-        self.loss_history = None
         self.n_trees = n_trees
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -27,37 +31,48 @@ class RandomForestClassifier(GlassBoxModel):
         return self.failure_modes
 
     def fit(self, X, y):
-            print(f"⚡ Booting Stochastic Micro-Batch Forest ({self.n_trees} trees)...")
-            self.trees = [] # Reset trees on fresh fit
+        self._store_dataset_stats(X)
+        self.check_assumptions(X, y)
 
-            n_samples = X.shape[0]
-            # The Magic Number: Give each tree only 3,000 random rows.
-            # This forces the tree to train instantly while maintaining ensemble diversity.
-            sample_size = min(3000, n_samples)
+        print(f"⚡ Booting Stochastic Micro-Batch Forest ({self.n_trees} trees)...")
+        self.trees = []  # Reset trees on fresh fit
 
-            for i in range(self.n_trees):
-                # 1. Bootstrap Sub-Sampling
-                np.random.seed(42 + i) # Ensures reproducible randomness
-                indices = np.random.choice(n_samples, size=sample_size, replace=True)
-                X_batch, y_batch = X[indices], y[indices]
+        n_samples = X.shape[0]
+        # The Magic Number: Give each tree only 3,000 random rows.
+        # This forces the tree to train instantly while maintaining ensemble diversity.
+        sample_size = min(3000, n_samples)
 
-                # 2. Train the base tree on the micro-batch
-                tree = DecisionTreeClassifier(
-                    max_depth=self.max_depth,
-                    min_samples_split=self.min_samples_split,
-                    criterion='gini'
-                )
-                tree.fit(X_batch, y_batch)
-                self.trees.append(tree)
+        for i in range(self.n_trees):
+            # 1. Bootstrap Sub-Sampling
+            np.random.seed(42 + i)  # Ensures reproducible randomness
+            indices = np.random.choice(n_samples, size=sample_size, replace=True)
+            X_batch, y_batch = X[indices], y[indices]
 
-                # Print a clean progress bar for the terminal so you know it's not frozen
-                print(f"  [>] Tree {i+1}/{self.n_trees} planted.")
+            # 2. Train the base tree on the micro-batch
+            tree = DecisionTreeClassifier(
+                max_depth=self.max_depth,
+                min_samples_split=self.min_samples_split,
+                criterion="gini",
+            )
+            tree.fit(X_batch, y_batch)
+            self.trees.append(tree)
 
-            self.is_fitted = True
+            # Print a clean progress bar for the terminal so you know it's not frozen
+            print(f"  [>] Tree {i + 1}/{self.n_trees} planted.")
+
+        self.is_fitted = True
+
+        # Ensemble training error: fraction of training rows the majority
+        # vote gets wrong, so diagnose() / generalization_estimate have a
+        # real numeric signal to work with instead of silently staying None.
+        train_preds = self.predict(X)
+        self.training_error = float(np.mean(train_preds != y))
 
     def predict(self, X):
         if not self.is_fitted:
-            raise ValueError("GlassBox Error: Model is not fitted yet. Call .fit() first.")
+            raise ValueError(
+                "GlassBox Error: Model is not fitted yet. Call .fit() first."
+            )
 
         # Get predictions from every single tree
         # Shape will be (n_trees, n_samples)
@@ -84,6 +99,28 @@ class RandomForestClassifier(GlassBoxModel):
             "overfitting seen in single Decision Trees."
         )
 
+    def _get_effective_params(self):
+        """
+        Tree ensembles aren't well described by the base class's coef_-based
+        default (which falls back to n_features and would report near-zero
+        complexity regardless of ensemble size or depth). Approximate capacity
+        instead as the total number of leaf nodes across all trees, summed --
+        each leaf is roughly one degree of freedom the ensemble can use to
+        memorize training data.
+        """
+        if not self.trees:
+            return self.dataset_stats_.get("n_features", 1)
+
+        def count_leaves(node):
+            if node is None:
+                return 0
+            if node.is_leaf_node():
+                return 1
+            return count_leaves(node.left) + count_leaves(node.right)
+
+        total_leaves = sum(count_leaves(tree.root) for tree in self.trees)
+        return max(total_leaves, 1)
+
 
 class RandomForestRegressor(GlassBoxModel):
     """
@@ -91,6 +128,7 @@ class RandomForestRegressor(GlassBoxModel):
     Trains multiple Decision Tree Regressors on random subsets of the data
     and averages their continuous predictions to smooth out the 'staircase' effect.
     """
+
     def __init__(self, n_trees=10, max_depth=10, min_samples_split=2):
         super().__init__()
         self.n_trees = n_trees
@@ -116,8 +154,7 @@ class RandomForestRegressor(GlassBoxModel):
         print(f"Planting a regression forest of {self.n_trees} trees...")
         for i in range(self.n_trees):
             tree = DecisionTreeRegressor(
-                max_depth=self.max_depth,
-                min_samples_split=self.min_samples_split
+                max_depth=self.max_depth, min_samples_split=self.min_samples_split
             )
 
             # BOOTSTRAPPING: Pick random rows with replacement

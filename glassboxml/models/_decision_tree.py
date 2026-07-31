@@ -1,9 +1,14 @@
 import numpy as np
+
 from glassboxml.core._base_model import GlassBoxModel
+
 
 class Node:
     """A single decision node or leaf in the tree."""
-    def __init__(self, feature=None, threshold=None, left=None, right=None, *, value=None):
+
+    def __init__(
+        self, feature=None, threshold=None, left=None, right=None, *, value=None
+    ):
         self.feature = feature
         self.threshold = threshold
         self.left = left
@@ -13,19 +18,20 @@ class Node:
     def is_leaf_node(self):
         return self.value is not None
 
+
 class DecisionTreeClassifier(GlassBoxModel):
     """
     Transparent Decision Tree Classifier.
     Uses Information Theory (Gini Impurity or Entropy) to recursively split data.
     """
-    def __init__(self, min_samples_split=2, max_depth=100, criterion='gini'):
+
+    def __init__(self, min_samples_split=2, max_depth=100, criterion="gini"):
         super().__init__()
-        self.loss_history = None
         self.min_samples_split = min_samples_split
         self.max_depth = max_depth
 
         # Allow the user to choose their chaos metric!
-        if criterion not in ['gini', 'entropy']:
+        if criterion not in ["gini", "entropy"]:
             raise ValueError("criterion must be 'gini' or 'entropy'")
         self.criterion = criterion
         self.root = None
@@ -64,7 +70,11 @@ class DecisionTreeClassifier(GlassBoxModel):
         n_samples, n_feats = X.shape
         n_labels = len(np.unique(y))
 
-        if (depth >= self.max_depth or n_labels == 1 or n_samples < self.min_samples_split):
+        if (
+            depth >= self.max_depth
+            or n_labels == 1
+            or n_samples < self.min_samples_split
+        ):
             leaf_value = self._most_common_label(y)
             return Node(value=leaf_value)
 
@@ -104,7 +114,7 @@ class DecisionTreeClassifier(GlassBoxModel):
 
     def _information_gain(self, y, X_column, threshold):
         # 1. Calculate parent impurity based on the chosen criterion
-        if self.criterion == 'gini':
+        if self.criterion == "gini":
             parent_impurity = self._gini(y)
         else:
             parent_impurity = self._entropy(y)
@@ -118,7 +128,7 @@ class DecisionTreeClassifier(GlassBoxModel):
         n = len(y)
         n_l, n_r = len(left_idxs), len(right_idxs)
 
-        if self.criterion == 'gini':
+        if self.criterion == "gini":
             e_l, e_r = self._gini(y[left_idxs]), self._gini(y[right_idxs])
         else:
             e_l, e_r = self._entropy(y[left_idxs]), self._entropy(y[right_idxs])
@@ -149,7 +159,9 @@ class DecisionTreeClassifier(GlassBoxModel):
 
     def predict(self, X):
         if not self.is_fitted:
-            raise ValueError("GlassBox Error: Model is not fitted yet. Call .fit() first.")
+            raise ValueError(
+                "GlassBox Error: Model is not fitted yet. Call .fit() first."
+            )
         return np.array([self._traverse_tree(x, self.root) for x in X])
 
     def _traverse_tree(self, x, node):
@@ -171,15 +183,18 @@ class DecisionTreeClassifier(GlassBoxModel):
             if node.is_leaf_node():
                 return f"{indent}└── Predict Class: {node.value}\n"
 
-            tree_str = f"{indent}├── IF Feature {node.feature} <= {node.threshold:.4f}:\n"
+            tree_str = (
+                f"{indent}├── IF Feature {node.feature} <= {node.threshold:.4f}:\n"
+            )
             tree_str += print_tree(node.left, depth + 1)
-            tree_str += f"{indent}└── ELSE (Feature {node.feature} > {node.threshold:.4f}):\n"
+            tree_str += (
+                f"{indent}└── ELSE (Feature {node.feature} > {node.threshold:.4f}):\n"
+            )
             tree_str += print_tree(node.right, depth + 1)
             return tree_str
 
         explanation += print_tree(self.root)
         return explanation
-
 
 
 class DecisionTreeRegressor(GlassBoxModel):
@@ -188,6 +203,7 @@ class DecisionTreeRegressor(GlassBoxModel):
     Uses Variance Reduction (Mean Squared Error) to recursively split data
     and predicts the mean value at the leaves.
     """
+
     def __init__(self, min_samples_split=2, max_depth=100):
         super().__init__()
         self.min_samples_split = min_samples_split
@@ -214,7 +230,11 @@ class DecisionTreeRegressor(GlassBoxModel):
         n_samples, n_feats = X.shape
 
         # Stopping criteria: Max depth, min samples, or variance is 0 (all values identical)
-        if (depth >= self.max_depth or n_samples < self.min_samples_split or np.var(y) == 0):
+        if (
+            depth >= self.max_depth
+            or n_samples < self.min_samples_split
+            or np.var(y) == 0
+        ):
             # REGRESSION TWEAK 1: Predict the Mean!
             leaf_value = np.mean(y)
             return Node(value=leaf_value)
@@ -290,14 +310,19 @@ class DecisionTreeRegressor(GlassBoxModel):
             return "Model is not fitted."
 
         explanation = "--- GlassBox Explanation: Decision Tree Regressor ---\n"
+
         def print_tree(node, depth=0):
             indent = "  " * depth
             if node.is_leaf_node():
                 return f"{indent}└── Predict Value (Mean): {node.value:.4f}\n"
 
-            tree_str = f"{indent}├── IF Feature {node.feature} <= {node.threshold:.4f}:\n"
+            tree_str = (
+                f"{indent}├── IF Feature {node.feature} <= {node.threshold:.4f}:\n"
+            )
             tree_str += print_tree(node.left, depth + 1)
-            tree_str += f"{indent}└── ELSE (Feature {node.feature} > {node.threshold:.4f}):\n"
+            tree_str += (
+                f"{indent}└── ELSE (Feature {node.feature} > {node.threshold:.4f}):\n"
+            )
             tree_str += print_tree(node.right, depth + 1)
             return tree_str
 

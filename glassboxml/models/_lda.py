@@ -2,15 +2,15 @@ import numpy as np
 
 from glassboxml.core._base_model import GlassBoxModel
 
+
 class LDA(GlassBoxModel):
     """
     Transparent Linear Discriminant Analysis (LDA).
     A supervised dimensionality reduction tool that maximizes class separability.
     """
 
-    def __init__(self,n_components):
+    def __init__(self, n_components):
         super().__init__()
-        self.loss_history = None
         self.n_components = n_components
         self.components_ = None
         self.explained_variance_ratio_ = None
@@ -33,7 +33,7 @@ class LDA(GlassBoxModel):
         # Check for Perfect Multi-Collinearity
         # If features are perfectly correlated, the Within-Class scatter matrix cannot be inverted!
 
-        correlation_matrix = np.corrcoef(X,rowvar=False)
+        correlation_matrix = np.corrcoef(X, rowvar=False)
         if n_features > 1 and np.any(np.triu(np.abs(correlation_matrix), k=1) > 0.99):
             self.failure_modes.append(
                 "Severe multicollinearity detected. The Within-Class scatter matrix (S_W) "
@@ -41,14 +41,14 @@ class LDA(GlassBoxModel):
             )
 
         return self.failure_modes
-    
-    def fit(self,X,y):
+
+    def fit(self, X, y):
         self._store_dataset_stats(X)
         self.check_assumptions(X, y)
-        
+
         n_features = X.shape[1]
         mean_overall = np.mean(X, axis=0)
-        
+
         S_W = np.zeros((n_features, n_features))
         S_B = np.zeros((n_features, n_features))
 
@@ -57,12 +57,12 @@ class LDA(GlassBoxModel):
             X_c = X[y == c]
             mean_c = np.mean(X_c, axis=0)
             n_c = X_c.shape[0]
-            
+
             # Within-Class Scatter (S_W)
             # How much does Class C deviate from its own mean?
             diff_W = X_c - mean_c
             S_W += np.dot(diff_W.T, diff_W)
-            
+
             # Between-Class Scatter (S_B)
             # How far is Class C's mean from the global overall mean?
             diff_B = (mean_c - mean_overall).reshape(n_features, 1)
@@ -87,40 +87,42 @@ class LDA(GlassBoxModel):
         valid_components = min(self.n_components, len(self.classes_) - 1)
         self.components_ = eigenvectors[:, :valid_components].T
 
-
         # Calculate explained variance ratio
         total_variance = np.sum(eigenvalues)
         if total_variance > 0:
-            self.explained_variance_ratio_ = eigenvalues[:valid_components] / total_variance
+            self.explained_variance_ratio_ = (
+                eigenvalues[:valid_components] / total_variance
+            )
         else:
             self.explained_variance_ratio_ = np.zeros(valid_components)
-            
+
         self.is_fitted = True
         self.training_error = "N/A (Supervised Dimensionality Reduction)"
 
-
     def transform(self, X):
         if not self.is_fitted:
-            raise ValueError("GlassBox Error: Model is not fitted yet. Call .fit() first.")
+            raise ValueError(
+                "GlassBox Error: Model is not fitted yet. Call .fit() first."
+            )
         return np.dot(X, self.components_.T)
-    
-    def fit_transform(self,X,y):
-        self.fit(X,y)
+
+    def fit_transform(self, X, y):
+        self.fit(X, y)
         return self.transform(X)
-    
+
     def predict(self, X):
         raise NotImplementedError(
             "LDA is being used here as a dimensionality reduction tool. "
             "Use .transform(X) to squash your data, then pass it to a Classifier!"
         )
-    
+
     def explain(self):
         if not self.is_fitted:
             return "Model is not fitted."
-            
+
         cumulative_variance = np.sum(self.explained_variance_ratio_) * 100
         n_comps = self.components_.shape[0]
-        
+
         explanation = (
             "--- GlassBox Explanation: Linear Discriminant Analysis (LDA) ---\n"
             f"Classes Detected: {len(self.classes_)}\n"

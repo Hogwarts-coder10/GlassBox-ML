@@ -1,16 +1,19 @@
 import numpy as np
+
 from glassboxml.core._base_model import GlassBoxModel
+
 
 class KNNClassifier(GlassBoxModel):
     """
     Transparent K-Nearest Neighbors Classifier.
     A non-parametric, lazy learning algorithm based purely on geometric distance.
     """
+
     def __init__(self, k=3, p=2):
         super().__init__()
         self.loss_history = None
         self.k = k
-        self.p = p # 1: Manhattan, 2: Euclidean
+        self.p = p  # 1: Manhattan, 2: Euclidean
 
     def check_assumptions(self, X, y):
         self.failure_modes = []
@@ -22,7 +25,7 @@ class KNNClassifier(GlassBoxModel):
                 "this can lead to voting ties. Consider using an odd k."
             )
 
-        if n_features > 15:
+        if n_features >= 15:
             self.failure_modes.append(
                 f"Curse of Dimensionality: High dimensionality detected ({n_features} features). "
                 "In high-dimensional space, all points become nearly equidistant, rendering "
@@ -57,12 +60,16 @@ class KNNClassifier(GlassBoxModel):
 
     def predict(self, X):
         if not self.is_fitted:
-            raise ValueError("GlassBox Error: Model is not fitted yet. Call .fit() first.")
+            raise ValueError(
+                "GlassBox Error: Model is not fitted yet. Call .fit() first."
+            )
 
         y_pred = []
         for x_new in X:
-            distances = [self._compute_distance(x_new, x_train) for x_train in self.X_train]
-            k_indices = np.argsort(distances)[:self.k]
+            distances = [
+                self._compute_distance(x_new, x_train) for x_train in self.X_train
+            ]
+            k_indices = np.argsort(distances)[: self.k]
             k_nearest_labels = [self.y_train[i] for i in k_indices]
 
             unique_labels, counts = np.unique(k_nearest_labels, return_counts=True)
@@ -75,8 +82,14 @@ class KNNClassifier(GlassBoxModel):
         if not self.is_fitted:
             return "Model is not fitted."
 
-        metric = "Manhattan (Grid-like)" if self.p == 1 else "Euclidean (Straight-line)" if self.p == 2 else f"Minkowski (p={self.p})"
-        samples = self.dataset_stats_.get('n_samples', 0)
+        metric = (
+            "Manhattan (Grid-like)"
+            if self.p == 1
+            else "Euclidean (Straight-line)"
+            if self.p == 2
+            else f"Minkowski (p={self.p})"
+        )
+        samples = self.dataset_stats_.get("n_samples", 0)
 
         return (
             "--- GlassBox Explanation: K-Nearest Neighbors ---\n"
