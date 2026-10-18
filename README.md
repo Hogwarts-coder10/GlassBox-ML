@@ -5,7 +5,7 @@ Machine Learning you can actually see.
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![PyPI](https://img.shields.io/badge/pypi-v0.2.0-blue)
+![PyPI](https://img.shields.io/badge/pypi-v0.2.1-blue)
 ---
 
 Overview
