@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use("QtAgg")
+
 import numpy as np
 
 from glassboxml.datasets import make_blobs
