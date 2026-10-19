@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import sys, os
 
 # Setup path
-from glassboxml.models.gradientboost import GradientBoostingRegressor
+from glassboxml.models._gradientboost import GradientBoostingRegressor
 
 def main():
     print("--- GlassBox-ML Demo: Gradient Boosting ---\n")
